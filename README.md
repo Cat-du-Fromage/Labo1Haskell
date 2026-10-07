@@ -6,7 +6,7 @@ C'est un jeu snake en mode terminal. Le jeu permet à un utilisateur de contrôl
 Problèmes que ce labo résoud :
 1. Démontrer une architecture fonctionnelle propre à Haskell. La logique du jeu est séparée de la couche I/O.
 2. Version moderne et configurable du jeu orinal Snake, jouable entièrement dans la console
-3. ?
+3. Problématique du rafraîchissement de l'écran de la console
 
 ## Fonctionnalités
 
@@ -18,16 +18,16 @@ Problèmes que ce labo résoud :
 - Détection des collisions, les 4 murs.
 - Affichage du score courant
 - Affichage du temps de la partie
-- Écran de fin ?
-- Leaderboard ?
+- Écran de fin / Rejouer
+- Leaderboard ? (non)
 
 ### Fonctionnalités en plus
 - Choix du mode de jeu
     - Classique
-    - On peut traverser les murs pour se transporter de l'autre de cours
+    - Wrapping du terrain (passage d'un bout a l'autre du terrain)
     - Apparition d'objets sur la grille comme obstacle ?
 - Changement de la vitesse du serpent (--speed)
-- Lancer une partie avec tous les paramètres définis (--seed/--file) ?
+- Lancer une partie avec tous les paramètres définis (--seed/--file) ? (si le temps)
 - Tests unitaires
 - Gestion des erreurs
 
