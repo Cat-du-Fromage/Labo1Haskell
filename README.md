@@ -1,6 +1,6 @@
 # Labo1 Haskell - Snake
 
-## Description
+## Description
 C'est un jeu snake en mode terminal. Le jeu permet à un utilisateur de contrôler un serpent qui se déplace sur une grille, manger un objet fait grandir le serpent et permet de gagner des points. Il faut éviter les murs afin de ne pas mourir.
 
 Problèmes que ce labo résoud :
@@ -10,7 +10,7 @@ Problèmes que ce labo résoud :
 
 ## Fonctionnalités
 
-### Fonctionnalités de base
+### Fonctionnalités de base
 - Grille configurable, hauteur et largeur
 - Déplacement du serpent, haut, droite, bas, gauche.
 - Apparition aléatoire d'onjets à consommer.
@@ -19,9 +19,8 @@ Problèmes que ce labo résoud :
 - Affichage du score courant
 - Affichage du temps de la partie
 - Écran de fin / Rejouer
-- Leaderboard ? (non)
 
-### Fonctionnalités en plus
+### Fonctionnalités en plus
 - Choix du mode de jeu
     - Classique
     - Wrapping du terrain (passage d'un bout a l'autre du terrain)
@@ -31,9 +30,9 @@ Problèmes que ce labo résoud :
 - Tests unitaires
 - Gestion des erreurs
 
-## Example
+## Example
 
-### Partie classique
+### Partie classique
 Dans la console :
 ```bash
 snake --width 20 --height 6 --speed 10
@@ -86,7 +85,7 @@ height 15
 mode obstacles
 ```
 
-### Aide
+### Aide
 Dans la console :
 ```bash
 snake --help
