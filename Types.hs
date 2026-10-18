@@ -1,7 +1,19 @@
+----------
+-- Types.hs
+-- Définitions des type du jeu
+----------
+
+module Types(
+    Position,
+    Direction,
+    Mode,
+    Status,
+    Configuration
+) where
 
 type Position = (Int, Int)
 
-data Direction = Up | Right | Down | Left
+data Direction = Up | Right' | Down | Left'
     deriving (Show, Eq)
 
 data Mode = Classic | Wrap | Obstacles
@@ -12,9 +24,10 @@ data Status = Running | Paused | GameOver
 
 data Configuration = Configuration
     {
-        width :: Int,
-        height :: Int,
-        speed :: Int,
-        mode :: Mode
+        -- Préfix, sinon on comprends pas d'ou ça vient dans les autres fichiers
+        configWidth :: Int,
+        configHeight :: Int,
+        configSpeed :: Int,
+        configMode :: Mode
     }
     deriving Show
