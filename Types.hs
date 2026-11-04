@@ -5,15 +5,15 @@
 
 module Types(
     Position,
-    Direction,
-    Mode,
-    Status,
-    Configuration
+    Direction(..),
+    Mode(..),
+    Status(..),
+    Configuration(..)
 ) where
 
 type Position = (Int, Int)
 
-data Direction = Up | Right' | Down | Left'
+data Direction = Up | Right' | Down | Left'
     deriving (Show, Eq)
 
 data Mode = Classic | Wrap | Obstacles
