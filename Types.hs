@@ -3,12 +3,14 @@
 -- Définitions des type du jeu
 ----------
 
-module Types(
+module Types (
     Position,
+    Snake,
     Direction(..),
     Mode(..),
     Status(..),
-    Configuration(..)
+    Configuration(..),
+    GameState(..)
 ) where
 
 type Position = (Int, Int)
@@ -21,6 +23,18 @@ data Mode = Classic | Wrap | Obstacles
 
 data Status = Running | Paused | GameOver
     deriving (Show, Eq)
+
+type Snake = [Position]
+
+data GameState = GameState
+    {
+        stateConfig :: Configuration,
+        stateSnake :: Snake,
+        stateDirection :: Direction,
+        stateStatus :: Status
+        -- TODO, ajouter pomme, mur, score, etc.
+    }
+    deriving Show
 
 data Configuration = Configuration
     {

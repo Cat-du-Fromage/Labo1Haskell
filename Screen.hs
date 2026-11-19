@@ -2,9 +2,18 @@
 -- Screen.hs
 -- Affichage dans le terminal
 ----------
-module Screen (terrainWidth, terrainHeight, renderTerrain, setupTerminal, draw, resetTerminal) where
+module Screen (
+    terrainWidth,
+    terrainHeight,
+    renderGame,
+    setupTerminal,
+    draw,
+    resetTerminal
+) where
 
 import System.IO
+
+import Types
 
 -- shortcut: taille fixe, à remplacer par --width et --height quand les arguments seront lus
 terrainWidth :: Int
@@ -13,12 +22,49 @@ terrainWidth = 20
 terrainHeight :: Int
 terrainHeight = 6
 
-renderTerrain :: Int -> Int -> String
-renderTerrain width height = unlines ([top] ++ rows ++ [bottom])
+renderGame :: GameState -> String
+renderGame state = unlines ([top] ++ rows ++ [bottom, info] ++ message)
     where
+        width = configWidth (stateConfig state)
+        height = configHeight (stateConfig state)
         top = "┌" ++ replicate width '─' ++ "┐"
         bottom = "└" ++ replicate width '─' ++ "┘"
-        rows = replicate height ("│" ++ replicate width ' ' ++ "│")
+
+        -- Une ligne par y et une case par x
+        rows = [ "│" ++ [ charInCell state (x, y) | x <- [0 .. width - 1] ] ++ "│"
+               | y <- [0 .. height - 1] ]
+
+        info = "Longueur: " ++ show (length (stateSnake state))
+            ++ "   (wasd: bouger, p: pause, x: quitter)"
+
+        message = case stateStatus state of
+            Running -> []
+            Paused -> ["PAUSE"]
+            GameOver -> ["GAME OVER | r: rejouer, x: quitter"]
+
+charInCell :: GameState -> Position -> Char
+charInCell state pos =
+    case lookup pos (snakeCells state) of
+        Just c -> c
+        Nothing -> ' '
+
+-- Chaque case du serpent est associée à son caractère
+snakeCells :: GameState -> [(Position, Char)]
+snakeCells state = case stateSnake state of
+    [] -> []
+    snake@(snakeHead : _) ->
+        (snakeHead, headChar (stateDirection state)) : zipWith bodyPart snake (drop 1 snake)
+    where
+        bodyPart (_, previousY) (x, y)
+            | previousY == y = ((x, y), '-')
+            | otherwise = ((x, y), '|')
+
+-- La tête va dans la direction du mouvement
+headChar :: Direction -> Char
+headChar Up = '^'
+headChar Right' = '>'
+headChar Down = 'v'
+headChar Left' = '<'
 
 -- Efface l'écran une seule fois et cache le curseur
 setupTerminal :: IO()
@@ -26,16 +72,20 @@ setupTerminal = do
     -- Sans UTF-8, les caractères du cadre font planter putStr sous Windows
     hSetEncoding stdout utf8
     hSetBuffering stdout (BlockBuffering Nothing)
+    hSetBuffering stdin NoBuffering -- ne pas attendre Entrée + ne pas afficher lettre sur jeu
+    hSetEcho stdin False
     putStr "\ESC[2J\ESC[?25l"
 
 -- Réécrit par-dessus l'image précédente, effacer à chaque tick ferait clignoter l'écran
 draw :: String -> IO()
 draw frame = do
-    putStr ("\ESC[H" ++ frame)
+    putStr ("\ESC[H" ++ frame ++ "\ESC[J")
     hFlush stdout
 
 -- Réaffiche le curseur, à appeler avant de quitter
 resetTerminal :: IO()
 resetTerminal = do
+    hSetEcho stdin True
+    hSetBuffering stdin LineBuffering
     putStr "\ESC[?25h"
     hFlush stdout
