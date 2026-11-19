@@ -1,5 +1,12 @@
 # Labo1 Haskell - Snake
 
+## COmpiler avec GHC et lancer le jeu
+
+```bash
+ghc -outputdir build -o Labo1Haskell Main.hs
+./Labo1Haskell
+```
+
 ## Description
 C'est un jeu snake en mode terminal. Le jeu permet à un utilisateur de contrôler un serpent qui se déplace sur une grille, manger un objet fait grandir le serpent et permet de gagner des points. Il faut éviter les murs afin de ne pas mourir.
 
