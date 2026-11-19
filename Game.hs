@@ -119,6 +119,7 @@ initState config = GameState
 
 changeDirection :: Direction -> GameState -> GameState
 changeDirection newDirection state
+    | stateStatus state /= Running = state
     | newDirection == opposite (stateDirection state) = state -- pas de demi tour direct
     | otherwise = state { stateDirection = newDirection } -- On crée une copie de state, on change un seul champ
 
