@@ -10,7 +10,7 @@ import Data.Maybe (mapMaybe)
 import Data.Time.Clock.POSIX (getPOSIXTime)
 import System.Environment (getArgs)
 import System.Exit (exitFailure)
-import System.IO (hPutStr, hPutStrLn, stderr)
+import System.IO (hIsTerminalDevice, hPutStr, hPutStrLn, stderr, stdin)
 
 import Arguments
 import Game
@@ -34,7 +34,14 @@ main = do
             hPutStr stderr usage
             exitFailure
         Right Help -> putStr usage
-        Right (Play config) -> finally (game config) resetTerminal
+        Right (Play config) -> do
+            -- Sans vrai terminal (IDE, redirection), la lecture des touches planterait
+            isTerminal <- hIsTerminalDevice stdin
+            if isTerminal
+                then finally (game config) resetTerminal
+                else do
+                    hPutStrLn stderr "Erreur : lance le jeu dans un vrai terminal (pas depuis un IDE ni avec une redirection)"
+                    exitFailure
     where
         game config = do
             setupTerminal

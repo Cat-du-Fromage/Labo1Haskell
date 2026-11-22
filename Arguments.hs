@@ -70,7 +70,7 @@ validate config
 usage :: String
 usage = unlines
     [
-        "Un jeu Snake en terminal",
+        "Snake",
         "",
         "Utilisation: snake [OPTIONS]",
         "",

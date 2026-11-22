@@ -84,7 +84,9 @@ step state
                     | isGrowing = target `elem` snake
                     | otherwise = target `elem` dropLast snake
 
-                movedState = state { stateSnake = moveSnake isGrowing target snake }
+                -- Seuls les vrais déplacements comptent : la pause n'avance pas le temps
+                movedState = state { stateSnake = moveSnake isGrowing target snake,
+                                     stateTicks = stateTicks state + 1 }
 
                 isGrowing = target == stateApple state
 
@@ -118,7 +120,8 @@ initState config seed = placeApple GameState
         stateStatus = Running,
         stateApple = (-1, -1), -- remplacée tout de suite par placeApple
         stateSeed = seed,
-        stateScore = 0
+        stateScore = 0,
+        stateTicks = 0
         -- TODO init murs
     }
 

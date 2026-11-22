@@ -29,7 +29,10 @@ renderGame state = unlines ([top] ++ rows ++ [bottom, info] ++ message)
         rows = [ "│" ++ [ charInCell state (x, y) | x <- [0 .. width - 1] ] ++ "│"
                | y <- [0 .. height - 1] ]
 
-        info = "Score: " ++ show (stateScore state)
+        -- shortcut: speed ticks = 1 seconde, ignore le temps d'affichage ; lire l'horloge si l'écart gêne
+        seconds = stateTicks state `div` configSpeed (stateConfig state)
+
+        info = "Score: " ++ show (stateScore state) ++ "  Temps: " ++ show seconds ++ "s"
             ++ "   (wasd: bouger, p: pause, x: quitter)"
 
         message = case stateStatus state of

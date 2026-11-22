@@ -36,7 +36,8 @@ data GameState = GameState
         stateStatus :: Status,
         stateApple :: Position,
         stateSeed :: Seed,
-        stateScore :: Int
+        stateScore :: Int,
+        stateTicks :: Int -- nombre de déplacements, sert à calculer le temps
         -- TODO, ajouter mur, etc.
     }
     deriving Show
