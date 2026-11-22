@@ -13,6 +13,8 @@ module Types (
     GameState(..)
 ) where
 
+import Random (Seed)
+
 type Position = (Int, Int)
 
 data Direction = Up | Right' | Down | Left'
@@ -31,8 +33,10 @@ data GameState = GameState
         stateConfig :: Configuration,
         stateSnake :: Snake,
         stateDirection :: Direction,
-        stateStatus :: Status
-        -- TODO, ajouter pomme, mur, score, etc.
+        stateStatus :: Status,
+        stateApple :: Position,
+        stateSeed :: Seed
+        -- TODO, ajouter mur, score, etc.
     }
     deriving Show
 

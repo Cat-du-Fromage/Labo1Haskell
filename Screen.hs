@@ -11,7 +11,10 @@ module Screen (
     resetTerminal
 ) where
 
+import Control.Monad (when)
+import System.Info (os)
 import System.IO
+import System.Process (callCommand)
 
 import Types
 
@@ -46,7 +49,9 @@ charInCell :: GameState -> Position -> Char
 charInCell state pos =
     case lookup pos (snakeCells state) of
         Just c -> c
-        Nothing -> ' '
+        Nothing
+            | pos == stateApple state -> 'x'
+            | otherwise -> ' '
 
 -- Chaque case du serpent est associée à son caractère
 snakeCells :: GameState -> [(Position, Char)]
@@ -69,6 +74,8 @@ headChar Left' = '<'
 -- Efface l'écran une seule fois et cache le curseur
 setupTerminal :: IO()
 setupTerminal = do
+    -- La console Windows décode en page 850 par défaut (le Mac est déjà en UTF-8)
+    when (os == "mingw32") (callCommand "chcp 65001 > nul")
     -- Sans UTF-8, les caractères du cadre font planter putStr sous Windows
     hSetEncoding stdout utf8
     hSetBuffering stdout (BlockBuffering Nothing)

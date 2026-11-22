@@ -7,9 +7,10 @@ module Main (main) where
 import Control.Concurrent (threadDelay)
 import Control.Exception (finally)
 import Data.Maybe (mapMaybe)
-import System.IO
+import Data.Time.Clock.POSIX (getPOSIXTime)
 
 import Game
+import Keyboard
 import Screen
 import Types
 
@@ -34,7 +35,9 @@ main = finally game resetTerminal
     where
         game = do
             setupTerminal
-            gameLoop (initState defaultConfiguration)
+            -- La seule source d'aléatoire : l'heure au lancement (en ms)
+            time <- getPOSIXTime
+            gameLoop (initState defaultConfiguration (floor (time * 1000)))
 
 ----------------------------------------------------
 
@@ -57,9 +60,9 @@ gameLoop state = do
 -- Écran de fin
 replay :: GameState -> IO()
 replay state = do
-    c <- getChar
+    c <- readKey
     case c of
-        'r' -> gameLoop (initState (stateConfig state))
+        'r' -> gameLoop (initState (stateConfig state) (stateSeed state))
         'x' -> return ()
         _ -> replay state
 
@@ -71,12 +74,11 @@ replay state = do
 
 readKeys :: IO[Char]
 readKeys = do
-    -- https://hackage-content.haskell.org/package/base-4.22.0.0/docs/System-IO.html#v:hReady
-    -- retourne True si au moins un item est prêt à être manipulé
-    isReady <- hReady stdin
+    -- On vide toutes les touches en attente sans jamais bloquer
+    isReady <- keyReady
     if isReady then
         do
-            c <- getChar
+            c <- readKey
             more <- readKeys
             return (c:more)
     else

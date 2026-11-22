@@ -13,6 +13,8 @@ module Game (
     step
 ) where
 
+import Apple
+import Random (Seed)
 import Types
 
 ----------
@@ -67,7 +69,8 @@ step state
 
         moveFrom snakeHead
             | hitsBorder || bitesSelf = state { stateStatus = GameOver }
-            | otherwise = state { stateSnake = moveSnake isGrowing target snake }
+            | isGrowing = placeApple movedState
+            | otherwise = movedState
             where
                 targetPos = newPos (stateDirection state) snakeHead
 
@@ -81,8 +84,9 @@ step state
                     | isGrowing = target `elem` snake
                     | otherwise = target `elem` dropLast snake
 
-                -- TODO ajoute quand on mange une pomme -> grandir
-                isGrowing = False
+                movedState = state { stateSnake = moveSnake isGrowing target snake }
+
+                isGrowing = target == stateApple state
 
 ----------------------------------------------------
 
@@ -101,14 +105,16 @@ initSnake config = [ (cx - i, cy) | i <- [0 .. baseLength - 1] ]
         cx = configWidth config `div` 2
         cy = configHeight config `div` 2
 
-initState :: Configuration -> GameState
-initState config = GameState
+initState :: Configuration -> Seed -> GameState
+initState config seed = placeApple GameState
     {
         stateConfig = config,
         stateSnake = initSnake config,
         stateDirection = Right',
-        stateStatus = Running
-        -- TODO init pommes et murs
+        stateStatus = Running,
+        stateApple = (-1, -1), -- remplacée tout de suite par placeApple
+        stateSeed = seed
+        -- TODO init murs
     }
 
 ----------------------------------------------------
