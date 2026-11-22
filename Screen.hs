@@ -29,7 +29,7 @@ renderGame state = unlines ([top] ++ rows ++ [bottom, info] ++ message)
         rows = [ "│" ++ [ charInCell state (x, y) | x <- [0 .. width - 1] ] ++ "│"
                | y <- [0 .. height - 1] ]
 
-        info = "Longueur: " ++ show (length (stateSnake state))
+        info = "Score: " ++ show (stateScore state)
             ++ "   (wasd: bouger, p: pause, x: quitter)"
 
         message = case stateStatus state of

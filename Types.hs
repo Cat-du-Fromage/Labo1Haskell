@@ -35,8 +35,9 @@ data GameState = GameState
         stateDirection :: Direction,
         stateStatus :: Status,
         stateApple :: Position,
-        stateSeed :: Seed
-        -- TODO, ajouter mur, score, etc.
+        stateSeed :: Seed,
+        stateScore :: Int
+        -- TODO, ajouter mur, etc.
     }
     deriving Show
 

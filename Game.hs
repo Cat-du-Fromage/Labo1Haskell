@@ -69,7 +69,7 @@ step state
 
         moveFrom snakeHead
             | hitsBorder || bitesSelf = state { stateStatus = GameOver }
-            | isGrowing = placeApple movedState
+            | isGrowing = placeApple movedState { stateScore = stateScore state + applePoints }
             | otherwise = movedState
             where
                 targetPos = newPos (stateDirection state) snakeHead
@@ -97,6 +97,10 @@ step state
 baseLength :: Int
 baseLength = 3
 
+-- Points gagnés par pomme mangée
+applePoints :: Int
+applePoints = 10
+
 -- horizontal au milieu du terrain, tête à droite.
 -- Ex:  cx = 10 et cy = 3 -> [(10,3), (9,3), (8,3)]
 initSnake :: Configuration -> Snake
@@ -113,7 +117,8 @@ initState config seed = placeApple GameState
         stateDirection = Right',
         stateStatus = Running,
         stateApple = (-1, -1), -- remplacée tout de suite par placeApple
-        stateSeed = seed
+        stateSeed = seed,
+        stateScore = 0
         -- TODO init murs
     }
 
