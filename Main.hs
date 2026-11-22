@@ -8,7 +8,11 @@ import Control.Concurrent (threadDelay)
 import Control.Exception (finally)
 import Data.Maybe (mapMaybe)
 import Data.Time.Clock.POSIX (getPOSIXTime)
+import System.Environment (getArgs)
+import System.Exit (exitFailure)
+import System.IO (hPutStr, hPutStrLn, stderr)
 
+import Arguments
 import Game
 import Keyboard
 import Screen
@@ -18,26 +22,25 @@ import Types
 -- Point d'entrée
 ----------
 
--- TODO remplacer par la lecture des arguments pour --width etc.
-defaultConfiguration :: Configuration
-defaultConfiguration = Configuration
-    {
-        configWidth = terrainWidth,
-        configHeight = terrainHeight,
-        configSpeed = 5,
-        configMode = Classic
-    }
-
 -- finally -> resetTerminal appelé même si le programme crash
 -- https://hackage-content.haskell.org/package/base-4.22.0.0/docs/Control-Exception.html#v:finally
 main :: IO()
-main = finally game resetTerminal
+main = do
+    setupEncoding
+    args <- getArgs
+    case parseArgs args of
+        Left err -> do
+            hPutStrLn stderr ("Erreur : " ++ err)
+            hPutStr stderr usage
+            exitFailure
+        Right Help -> putStr usage
+        Right (Play config) -> finally (game config) resetTerminal
     where
-        game = do
+        game config = do
             setupTerminal
             -- La seule source d'aléatoire : l'heure au lancement (en ms)
             time <- getPOSIXTime
-            gameLoop (initState defaultConfiguration (floor (time * 1000)))
+            gameLoop (initState config (floor (time * 1000)))
 
 ----------------------------------------------------
 

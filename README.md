@@ -104,7 +104,7 @@ Options:
 --width INT   Largeur de la grille (défaut : 20)
 --height INT  Hauteur de la grille (défaut : 15)
 --speed INT   Vitesse du serpent (défaut : 5)
---mode MODE   Classic | infini | obstacles (défaut : classic)
+--mode MODE   classic | wrap (défaut : classic)
 --file FILE   Charger un niveau depuis un fichier
 --help        Afficher cette aide
 ```

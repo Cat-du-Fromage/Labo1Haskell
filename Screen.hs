@@ -3,9 +3,8 @@
 -- Affichage dans le terminal
 ----------
 module Screen (
-    terrainWidth,
-    terrainHeight,
     renderGame,
+    setupEncoding,
     setupTerminal,
     draw,
     resetTerminal
@@ -17,13 +16,6 @@ import System.IO
 import System.Process (callCommand)
 
 import Types
-
--- shortcut: taille fixe, à remplacer par --width et --height quand les arguments seront lus
-terrainWidth :: Int
-terrainWidth = 20
-
-terrainHeight :: Int
-terrainHeight = 6
 
 renderGame :: GameState -> String
 renderGame state = unlines ([top] ++ rows ++ [bottom, info] ++ message)
@@ -71,13 +63,18 @@ headChar Right' = '>'
 headChar Down = 'v'
 headChar Left' = '<'
 
--- Efface l'écran une seule fois et cache le curseur
-setupTerminal :: IO()
-setupTerminal = do
+-- À appeler en premier : l'aide et les erreurs ont aussi des accents
+setupEncoding :: IO()
+setupEncoding = do
     -- La console Windows décode en page 850 par défaut (le Mac est déjà en UTF-8)
     when (os == "mingw32") (callCommand "chcp 65001 > nul")
     -- Sans UTF-8, les caractères du cadre font planter putStr sous Windows
     hSetEncoding stdout utf8
+    hSetEncoding stderr utf8
+
+-- Efface l'écran une seule fois et cache le curseur
+setupTerminal :: IO()
+setupTerminal = do
     hSetBuffering stdout (BlockBuffering Nothing)
     hSetBuffering stdin NoBuffering -- ne pas attendre Entrée + ne pas afficher lettre sur jeu
     hSetEcho stdin False
