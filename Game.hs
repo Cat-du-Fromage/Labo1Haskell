@@ -4,56 +4,36 @@
 ----------
 
 module Game (
-    newPos,
     isOutside,
     initState,
     changeDirection,
     togglePause,
-    moveSnake,
     step
 ) where
 
 import Apple
+import Obstacles
 import Random (Seed)
+import Snake
 import Types
 
 ----------
--- Deplacements
+-- Grille
 ----------
-
--- Si on part du principe que (0, 0) est en haut à gauche
-newPos :: Direction -> Position -> Position
-newPos Up (x, y) = (x, y - 1)
-newPos Right' (x, y) = (x + 1, y)
-newPos Down (x, y) = (x, y + 1)
-newPos Left' (x, y) = (x - 1, y)
 
 isOutside :: Configuration -> Position -> Bool
 isOutside config (x, y) = x < 0 || y < 0 || x >= configWidth config || y >= configHeight config
-
-opposite :: Direction -> Direction
-opposite Up = Down
-opposite Right' = Left'
-opposite Down = Up
-opposite Left' = Right'
 
 -- Pour le mode wrap, si on sort d'un côté on revient de l'autre
 -- sortir à gauche ramène à droite, etc.
 wrapPosition :: Configuration -> Position -> Position
 wrapPosition config (x, y) = (x `mod` configWidth config, y `mod` configHeight config)
 
--- Déplacement du serpent
--- init crash sur une liste vide + généricité
-dropLast :: [a] -> [a]
-dropLast [] = []
-dropLast [_] = []
-dropLast (x : xs) = x : dropLast xs
+----------------------------------------------------
 
--- On ajoute nouvelle tête devant + on retire le bout queue.
-moveSnake :: Bool -> Position -> Snake -> Snake
-moveSnake isGrowing newHeadPos snake
-    | isGrowing = newHeadPos : snake
-    | otherwise = newHeadPos : dropLast snake
+----------
+-- Tick
+----------
 
 -- Calcule l'état suivant à partir de l'état courant -> représente un tick de jeu
 step :: GameState -> GameState
@@ -68,7 +48,7 @@ step state
         snake = stateSnake state
 
         moveFrom snakeHead
-            | hitsBorder || bitesSelf = state { stateStatus = GameOver }
+            | hitsBorder || hitsObstacle || bitesSelf isGrowing target snake = state { stateStatus = GameOver }
             | isGrowing = placeApple movedState { stateScore = stateScore state + applePoints }
             | otherwise = movedState
             where
@@ -80,9 +60,7 @@ step state
 
                 hitsBorder = configMode config /= Wrap && isOutside config target
 
-                bitesSelf
-                    | isGrowing = target `elem` snake
-                    | otherwise = target `elem` dropLast snake
+                hitsObstacle = target `elem` stateObstacles state
 
                 -- Seuls les vrais déplacements comptent : la pause n'avance pas le temps
                 movedState = state { stateSnake = moveSnake isGrowing target snake,
@@ -93,26 +71,16 @@ step state
 ----------------------------------------------------
 
 ----------
--- Création du serpent
+-- Création de la partie
 ----------
-
-baseLength :: Int
-baseLength = 3
 
 -- Points gagnés par pomme mangée
 applePoints :: Int
 applePoints = 10
 
--- horizontal au milieu du terrain, tête à droite.
--- Ex:  cx = 10 et cy = 3 -> [(10,3), (9,3), (8,3)]
-initSnake :: Configuration -> Snake
-initSnake config = [ (cx - i, cy) | i <- [0 .. baseLength - 1] ]
-    where
-        cx = configWidth config `div` 2
-        cy = configHeight config `div` 2
-
 initState :: Configuration -> Seed -> GameState
-initState config seed = placeApple GameState
+-- Les obstacles en premier évite que la pomme spawn dessus
+initState config seed = placeApple (placeObstacles GameState
     {
         stateConfig = config,
         stateSnake = initSnake config,
@@ -121,9 +89,9 @@ initState config seed = placeApple GameState
         stateApple = (-1, -1), -- remplacée tout de suite par placeApple
         stateSeed = seed,
         stateScore = 0,
-        stateTicks = 0
-        -- TODO init murs
-    }
+        stateTicks = 0,
+        stateObstacles = []
+    })
 
 ----------------------------------------------------
 
@@ -142,10 +110,3 @@ togglePause state = case stateStatus state of
     Running -> state { stateStatus = Paused }
     Paused -> state { stateStatus = Running }
     GameOver -> state
-
-
-----------------------------------------------------
-
-----------
--- Gestion du temps ?
-----------

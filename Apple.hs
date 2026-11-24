@@ -20,5 +20,6 @@ placeApple state = case freeCells of
         config = stateConfig state
         freeCells = [ (x, y) | y <- [0 .. configHeight config - 1],
                                x <- [0 .. configWidth config - 1],
-                               (x, y) `notElem` stateSnake state ]
+                               (x, y) `notElem` stateSnake state,
+                               (x, y) `notElem` stateObstacles state ]
         (index, newSeed) = randomInt (length freeCells) (stateSeed state)

@@ -53,11 +53,11 @@ readInt flag value = case readMaybe value of
     Just n -> Right n
     Nothing -> Left (flag ++ " attend un entier, reçu : " ++ value)
 
--- shortcut: obstacles pas encore accepté, à ajouter quand les murs seront codés
 readMode :: String -> Either String Mode
 readMode "classic" = Right Classic
 readMode "wrap" = Right Wrap
-readMode value = Left ("mode inconnu : " ++ value ++ " (classic | wrap)")
+readMode "obstacles" = Right Obstacles
+readMode value = Left ("mode inconnu : " ++ value ++ " (classic | wrap | obstacles)")
 
 -- Le serpent de départ fait 3 cases au centre, et speed divise une seconde
 validate :: Configuration -> Either String Configuration
@@ -78,6 +78,6 @@ usage = unlines
         "--width INT   Largeur de la grille (défaut : 20)",
         "--height INT  Hauteur de la grille (défaut : 15)",
         "--speed INT   Vitesse du serpent (défaut : 5)",
-        "--mode MODE   classic | wrap (défaut : classic)",
+        "--mode MODE   classic | wrap | obstacles (défaut : classic)",
         "--help        Afficher cette aide"
     ]
