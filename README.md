@@ -3,8 +3,16 @@
 ## COmpiler avec GHC et lancer le jeu
 
 ```bash
-ghc -outputdir build -o Labo1Haskell Main.hs
+ghc -isrc -outputdir build -o Labo1Haskell app/Main.hs
 ./Labo1Haskell
+```
+
+## Tests unitaires
+
+On affiche les erreurs, sinon tests réussis.
+Depuis la racine du projet :
+```bash
+runghc -isrc tests/Tests.hs
 ```
 
 ## Description
@@ -62,7 +70,7 @@ Le `x` représente l'objet à manger, le serpent est constitué de `-, |` pour l
 ### Partie custom
 Dans la console :
 ```bash
-snake --width 20 --height 20 --speed 10 --mode obstacle
+snake --width 20 --height 20 --speed 10 --mode obstacles
 ```
 
 Sortie :
@@ -104,7 +112,7 @@ Options:
 --width INT   Largeur de la grille (défaut : 20)
 --height INT  Hauteur de la grille (défaut : 15)
 --speed INT   Vitesse du serpent (défaut : 5)
---mode MODE   classic | wrap (défaut : classic)
+--mode MODE   classic | wrap | obstacles (défaut : classic)
 --file FILE   Charger un niveau depuis un fichier
 --help        Afficher cette aide
 ```

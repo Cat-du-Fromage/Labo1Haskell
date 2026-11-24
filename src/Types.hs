@@ -37,10 +37,11 @@ data GameState = GameState
         stateApple :: Position,
         stateSeed :: Seed,
         stateScore :: Int,
-        stateTicks :: Int -- nombre de déplacements, sert à calculer le temps
-        -- TODO, ajouter mur, etc.
+        stateTicks :: Int, -- nombre de déplacements, sert à calculer le temps
+        stateObstacles :: [Position] -- vide sauf en mode obstacles
     }
     deriving Show
+
 
 data Configuration = Configuration
     {

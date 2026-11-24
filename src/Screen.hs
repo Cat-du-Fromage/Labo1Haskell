@@ -46,6 +46,7 @@ charInCell state pos =
         Just c -> c
         Nothing
             | pos == stateApple state -> 'x'
+            | pos `elem` stateObstacles state -> 'O'
             | otherwise -> ' '
 
 -- Chaque case du serpent est associée à son caractère
