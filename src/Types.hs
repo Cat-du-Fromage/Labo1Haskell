@@ -42,6 +42,7 @@ data GameState = GameState
     }
     deriving Show
 
+
 data Configuration = Configuration
     {
         -- Préfix, sinon on comprends pas d'ou ça vient dans les autres fichiers

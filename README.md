@@ -3,8 +3,16 @@
 ## COmpiler avec GHC et lancer le jeu
 
 ```bash
-ghc -outputdir build -o Labo1Haskell Main.hs
+ghc -isrc -outputdir build -o Labo1Haskell app/Main.hs
 ./Labo1Haskell
+```
+
+## Tests unitaires
+
+On affiche les erreurs, sinon tests réussis.
+Depuis la racine du projet :
+```bash
+runghc -isrc tests/Tests.hs
 ```
 
 ## Description
