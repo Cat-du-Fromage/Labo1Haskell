@@ -41,7 +41,6 @@ Problèmes que ce labo résoud :
     - Wrapping du terrain (passage d'un bout a l'autre du terrain)
     - Apparition d'objets sur la grille comme obstacle ?
 - Changement de la vitesse du serpent (--speed)
-- Lancer une partie avec tous les paramètres définis (--seed/--file) ? (si le temps)
 - Tests unitaires
 - Gestion des erreurs
 
@@ -86,19 +85,6 @@ Sortie :
 Score: 30  Temps: 146s
 ```
 Les `O` représentes les obstacles à éviter.
-
-### Partie avec fichier des paramètres
-Dans la console :
-```bash
-snake --file levels/level1.txt
-```
-
-Example de fichier:
-```text
-width 25
-height 15
-mode obstacles
-```
 
 ### Aide
 Dans la console :
